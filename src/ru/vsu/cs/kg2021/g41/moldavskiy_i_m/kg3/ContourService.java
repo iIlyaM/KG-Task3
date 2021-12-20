@@ -23,7 +23,7 @@ public class ContourService {
                 contour.add(temp2);
             }
         }
-        return new ArrayList<>();
+        return contour;
     }
 
     public static RealPoint isVertexInsideTriangle(SimpleTriangle triangle, RealPoint vertex) {
