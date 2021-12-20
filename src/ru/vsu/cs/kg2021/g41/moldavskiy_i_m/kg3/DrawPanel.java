@@ -232,19 +232,19 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         return null;
     }
 
-//    private static Line findFirstLineNextToClick(
-//            ScreenConverter sConverter,
-//            java.util.List<Line> lines,
-//            ScreenPoint searchPoint,
-//            int eps
-//            ) {
-//        for(Line line : lines) {
-//             if(closeToLine(sConverter, line, searchPoint, eps)) {
-//                 return line;
-//             }
-//        } return null;
-//    }
-//
+    private static Line findFirstLineNextToClick(
+            ScreenConverter sConverter,
+            java.util.List<Line> lines,
+            ScreenPoint searchPoint,
+            int eps
+            ) {
+        for(Line line : lines) {
+             if(closeToLine(sConverter, line, searchPoint, eps)) {
+                 return line;
+             }
+        } return null;
+    }
+
 
 
     @Override
@@ -264,19 +264,19 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         } else if(SwingUtilities.isLeftMouseButton(e)) {
             editingPoint = getEditingPoint(clickPoint);
 
-//            if(editingLine == null) {
-//                Line soughtLine = findFirstLineNextToClick(screenConverter, allLines,
-//                        new ScreenPoint(e.getX(), e.getY()), 3);
-//                if (soughtLine != null) {
-//                    editingLine = soughtLine;
-//                }
-//            } else {
-//                if(closeToLine(screenConverter, editingLine, new ScreenPoint(e.getX(), e.getY()), 3)) {
-//
-//                } else {
-//                    editingLine = null;
-//                }
-//            }
+            if(editingLine == null) {
+                Line soughtLine = findFirstLineNextToClick(screenConverter, allLines,
+                        new ScreenPoint(e.getX(), e.getY()), 3);
+                if (soughtLine != null) {
+                    editingLine = soughtLine;
+                }
+            } else {
+                if(closeToLine(screenConverter, editingLine, new ScreenPoint(e.getX(), e.getY()), 3)) {
+
+                } else {
+                    editingLine = null;
+                }
+            }
         }
         repaint();
     }

@@ -7,6 +7,22 @@ import java.util.List;
 public class ContourService {
 
     public static List<RealPoint> getContourPoints(SimpleTriangle firstTriangle, SimpleTriangle secondTriangle) {
+        List<RealPoint> contour = new ArrayList<>();
+        List<RealPoint> firstTriangleVertexes = firstTriangle.getPoints();
+        List<RealPoint> secondTriangleVertexes = secondTriangle.getPoints();
+        RealPoint temp1;
+        RealPoint temp2;
+
+        for (int i = 0; i < 3; i++) {
+            temp1 = isVertexInsideTriangle(firstTriangle, secondTriangleVertexes.get(i));
+            if(temp1 != null) {
+                contour.add(temp1);
+            }
+            temp2 = isVertexInsideTriangle(secondTriangle, firstTriangleVertexes.get(i));
+            if(temp2 != null) {
+                contour.add(temp2);
+            }
+        }
         return new ArrayList<>();
     }
 
