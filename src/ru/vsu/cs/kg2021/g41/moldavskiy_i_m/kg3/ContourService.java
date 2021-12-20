@@ -63,4 +63,46 @@ public class ContourService {
         }
         return false;
     }
+
+    private static RealPoint getIntersectionPoint(Line firstLine, Line secondLine) {
+          double denominator = (firstLine.getA() * secondLine.getB()) - (secondLine.getA() - firstLine.getB());
+          double numeratorX = -((firstLine.getC()) * secondLine.getB()) - (secondLine.getC() * firstLine.getB());
+          double numeratorY = -((firstLine.getA()) * secondLine.getC()) - (secondLine.getA() * firstLine.getB());
+//        double newPointX = -(C1 * B2 - C2 * B1)/(A1 * B2 - A2 * B1);
+//        double newPointY = -(A1 * C2 - A2 * C1)/(A1 * B2 - A2 * B1);
+
+        return new RealPoint(numeratorX / denominator, numeratorY / denominator);
+    }
+
+    private static List<RealPoint> getBorderPoints(List<RealPoint> points) {
+//        int min = list.get(0);
+//        int max = list.get(0);
+        List<RealPoint> borderPoints = new ArrayList<>();
+        double maxX = points.get(0).getX();
+        double maxY = points.get(0).getX();
+        double minX = points.get(0).getX();
+        double minY = points.get(0).getX();
+
+        for (RealPoint point: points) {
+            if(point.getX() < minX) {
+                minX = point.getX();
+            }
+
+            if(point.getX() > maxX) {
+                maxX = point.getX();
+            }
+        }
+        for (RealPoint point: points) {
+            if(point.getY() < minY) {
+                minY = point.getY();
+            }
+
+            if(point.getY() > maxY) {
+                maxY = point.getY();
+            }
+        }
+        borderPoints.add(new RealPoint(minX, minY));
+        borderPoints.add(new RealPoint(maxX, maxY));
+        return borderPoints;
+    }
 }

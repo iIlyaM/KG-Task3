@@ -23,8 +23,8 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
     public DrawPanel() {
         screenConverter = new ScreenConverter(-5, 10, 20, 20,
                 800, 600);
-        axisX = new Line(new RealPoint(-1, 0), new RealPoint(1, 0));
-        axisY = new Line(new RealPoint(0, -1), new RealPoint(0, 1));
+//        axisX = new Line(new RealPoint(-1, 0), new RealPoint(1, 0));
+//        axisY = new Line(new RealPoint(0, -1), new RealPoint(0, 1));
         SimpleTriangle firstTriangle = new SimpleTriangle(new RealPoint(1, 6), new RealPoint(4, -7), new RealPoint(8, 4));
         triangles.add(firstTriangle);
 
@@ -77,27 +77,14 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         List<RealPoint> points = new ArrayList<>();
         points.addAll(firstTriangle.getPoints());
         points.addAll(secondTriangle.getPoints());
-        List<RealPoint> borderPoints = getBorderPoints(points);
+       // List<RealPoint> borderPoints = getBorderPoints(points);
 
 
 
         return insertionCourt;
     }
 
-    private static RealPoint getIntersectionPoint(List<Double> firstLine, List<Double> secondLine) {
-        double A1 = firstLine.get(0);
-        double B1 = firstLine.get(1);
-        double C1 = firstLine.get(2);
 
-        double A2 = secondLine.get(0);
-        double B2 = secondLine.get(1);
-        double C2 = secondLine.get(2);
-
-        double newPointX = -(C1 * B2 - C2 * B1)/(A1 * B2 - A2 * B1);
-        double newPointY = -(A1 * C2 - A2 * C1)/(A1 * B2 - A2 * B1);
-
-        return new RealPoint(newPointX, newPointY);
-    }
 
     private static List<Double> getStraightLineEquation(RealPoint point) {
         /**
@@ -135,37 +122,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
 
-    private static List<RealPoint> getBorderPoints(List<RealPoint> points) {
-//        int min = list.get(0);
-//        int max = list.get(0);
-        List<RealPoint> borderPoints = new ArrayList<>();
-        double maxX = points.get(0).getX();
-        double maxY = points.get(0).getX();
-        double minX = points.get(0).getX();
-        double minY = points.get(0).getX();
 
-        for (RealPoint point: points) {
-            if(point.getX() < minX) {
-                minX = point.getX();
-            }
-
-            if(point.getX() > maxX) {
-                maxX = point.getX();
-            }
-        }
-        for (RealPoint point: points) {
-            if(point.getY() < minY) {
-                minY = point.getY();
-            }
-
-            if(point.getY() > maxY) {
-                maxY = point.getY();
-            }
-        }
-        borderPoints.add(new RealPoint(minX, minY));
-        borderPoints.add(new RealPoint(maxX, maxY));
-        return borderPoints;
-    }
 
     private static void drawTriangle(SimpleTriangle triangle, Graphics2D g, ScreenConverter sConverter) {
         ScreenPoint screenPoint1 = sConverter.real2Screen(triangle.getPoint1());
