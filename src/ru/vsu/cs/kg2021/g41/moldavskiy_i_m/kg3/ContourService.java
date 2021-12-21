@@ -10,6 +10,10 @@ public class ContourService {
         List<RealPoint> contour = new ArrayList<>();
         List<RealPoint> firstTriangleVertexes = firstTriangle.getPoints();
         List<RealPoint> secondTriangleVertexes = secondTriangle.getPoints();
+        List<RealPoint> points = new ArrayList<>();
+        List<RealPoint> borderPoints = getBorderPoints(points);
+        points.addAll(firstTriangleVertexes);
+        points.addAll(secondTriangleVertexes);
         RealPoint temp1;
         RealPoint temp2;
 
@@ -26,7 +30,37 @@ public class ContourService {
         return contour;
     }
 
-    public static RealPoint isVertexInsideTriangle(SimpleTriangle triangle, RealPoint vertex) {
+    private static List<RealPoint> getIntersectionPoints(SimpleTriangle firstTriangle, SimpleTriangle secondTriangle) {
+        List<RealPoint> insertionPoints = new ArrayList<>();
+        List<RealPoint> points = new ArrayList<>();
+        points.addAll(firstTriangle.getPoints());
+        points.addAll(secondTriangle.getPoints());
+        List<RealPoint> borderPoints = getBorderPoints(points);
+
+        Line tempLine1;
+        Line tempLine2;
+        RealPoint point;
+
+        for (int i = 0; i < firstTriangle.getPoints().size() - 1; i++) {
+            tempLine1 = new Line(firstTriangle.getPoints().get(i), firstTriangle.getPoints().get(i + 1));
+            if(i == 2) {
+                tempLine1 = new Line(firstTriangle.getPoints().get(2), firstTriangle.getPoints().get(0));
+            }
+            for (int j = 0; j < secondTriangle.getPoints().size() - 1; j++) {
+                tempLine2 = new Line(firstTriangle.getPoints().get(j), firstTriangle.getPoints().get(j + 1));
+                if(j == 2) {
+                    tempLine1 = new Line(firstTriangle.getPoints().get(2), firstTriangle.getPoints().get(0));
+                }
+                point = getIntersectionPoint(tempLine1, tempLine2);
+                if(checkPointIsNear(borderPoints.get(0), borderPoints.get(1), point)) {
+                    insertionPoints.add(point);
+                }
+            }
+        }
+        return insertionPoints;
+    }
+
+    private static RealPoint isVertexInsideTriangle(SimpleTriangle triangle, RealPoint vertex) {
         List<RealPoint> triangleVertexes = new ArrayList<>(triangle.getPoints());
         List<Double> resultList = new ArrayList<>();
         for (int i = 0; i < triangleVertexes.size() - 1; i++) {
@@ -79,9 +113,9 @@ public class ContourService {
 //        int max = list.get(0);
         List<RealPoint> borderPoints = new ArrayList<>();
         double maxX = points.get(0).getX();
-        double maxY = points.get(0).getX();
+        double maxY = points.get(0).getY();
         double minX = points.get(0).getX();
-        double minY = points.get(0).getX();
+        double minY = points.get(0).getY();
 
         for (RealPoint point: points) {
             if(point.getX() < minX) {
@@ -104,5 +138,10 @@ public class ContourService {
         borderPoints.add(new RealPoint(minX, minY));
         borderPoints.add(new RealPoint(maxX, maxY));
         return borderPoints;
+    }
+
+    private static boolean checkPointIsNear(RealPoint borderPoint1, RealPoint borderPoint2, RealPoint testedPoint) {
+        return ((testedPoint.getX() < borderPoint2.getX() && testedPoint.getX() > borderPoint1.getX()) &&
+                (testedPoint.getY() < borderPoint2.getY() && testedPoint.getY() > borderPoint1.getY()));
     }
 }

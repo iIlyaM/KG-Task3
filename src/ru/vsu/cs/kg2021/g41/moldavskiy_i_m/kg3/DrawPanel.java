@@ -74,9 +74,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
             ScreenConverter screenConverter
     ) {
         List<RealPoint> insertionCourt = new ArrayList<>();
-        List<RealPoint> points = new ArrayList<>();
-        points.addAll(firstTriangle.getPoints());
-        points.addAll(secondTriangle.getPoints());
+
        // List<RealPoint> borderPoints = getBorderPoints(points);
 
 
