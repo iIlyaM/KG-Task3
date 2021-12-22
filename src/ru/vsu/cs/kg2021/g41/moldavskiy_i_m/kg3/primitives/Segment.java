@@ -1,4 +1,6 @@
-package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3;
+package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.primitives;
+
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.RealPoint;
 
 public class Segment {
     private RealPoint point1, point2;

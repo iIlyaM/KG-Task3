@@ -1,4 +1,7 @@
-package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3;
+package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.services;
+
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.RealPoint;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.ScreenPoint;
 
 public class ScreenConverter {
     private double realStartX, realStartY, realWidth, realHeight;

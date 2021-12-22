@@ -1,18 +1,23 @@
 package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3;
 
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.model.SimpleTriangle;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.RealPoint;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.ScreenPoint;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.primitives.Line;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.services.ContourService;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.services.ScreenConverter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class DrawPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private ScreenConverter screenConverter;
-    private Line axisX, axisY;
+//    private Line axisX, axisY;
     private List<SimpleTriangle> triangles = new ArrayList<>();
     private java.util.List<Line> allLines = new ArrayList<>();
     private RealPoint editingPoint;
@@ -26,7 +31,9 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
 //        axisX = new Line(new RealPoint(-1, 0), new RealPoint(1, 0));
 //        axisY = new Line(new RealPoint(0, -1), new RealPoint(0, 1));
         SimpleTriangle firstTriangle = new SimpleTriangle(new RealPoint(1, 6), new RealPoint(4, -7), new RealPoint(8, 4));
+        SimpleTriangle secondTriangle = new SimpleTriangle(new RealPoint(12, 5), new RealPoint(-1, 5), new RealPoint(3, 6));
         triangles.add(firstTriangle);
+        triangles.add(secondTriangle);
 
 
 
@@ -59,6 +66,9 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         }
 
         drawTriangle(triangles.get(0), g, screenConverter);
+        drawTriangle(triangles.get(1), g, screenConverter);
+        List<RealPoint> test = ContourService.getContourPoints(triangles.get(0), triangles.get(1));
+
         if(editingLine != null) {
             g.setColor(Color.green);
             drawLine(g, screenConverter, editingLine);
@@ -68,60 +78,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         g.dispose();
     }
 
-    private static List<RealPoint> getIntersectionContour(
-            SimpleTriangle firstTriangle,
-            SimpleTriangle secondTriangle,
-            ScreenConverter screenConverter
-    ) {
-        List<RealPoint> insertionCourt = new ArrayList<>();
-
-       // List<RealPoint> borderPoints = getBorderPoints(points);
-
-
-
-        return insertionCourt;
-    }
-
-
-
-    private static List<Double> getStraightLineEquation(RealPoint point) {
-        /**
-         * Ax + By + C = 0
-         * A = -y2 + y1
-         * B = x2 - x1
-         * C = -y1x2 - x1y2
-         *
-         * x = - (C1 * B2 - C2 * B1)/(A1 * B2 - A2 * B1)
-         * y = - (A1 * C2 - A2 * C1)/(A1*B2 - A2 * B1)
-         */
-        List<Double> straightLineEquation = new ArrayList<>();
-        double x1 = point.getX();
-        double y1 = point.getY();
-        double x2 = point.getX();
-        double y2 = point.getY();
-//        double x3 = secondTrianglePoint1.getX();
-//        double y3 = secondTrianglePoint1.getY();
-//        double x4 = secondTrianglePoint2.getX();
-//        double y4 = secondTrianglePoint2.getY();
-
-        double A = y1 - y2;
-        double B = x2 - x1;
-        double C = -(y1 * x2) -(x1 * y2);
-        straightLineEquation.add(A);
-        straightLineEquation.add(B);
-        straightLineEquation.add(C);
-//        double A2 = y3 - y4;
-//        double B2 = x4 - x3;
-//        double C2 = -(y3 * x4) -(x3 * y4);
-//
-//        double newPointX = -(C1 * B2 - C2 * B1)/(A1 * B2 - A2 * B1);
-//        double newPointY = -(A1 * C2 - A2 * C1)/(A1 * B2 - A2 * B1);
-        return straightLineEquation;
-    }
-
-
-
-
     private static void drawTriangle(SimpleTriangle triangle, Graphics2D g, ScreenConverter sConverter) {
         ScreenPoint screenPoint1 = sConverter.real2Screen(triangle.getPoint1());
         ScreenPoint screenPoint2 = sConverter.real2Screen(triangle.getPoint2());
@@ -130,7 +86,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         g.drawLine(screenPoint2.getColumn(), screenPoint2.getRow(), screenPoint3.getColumn(), screenPoint3.getRow());
         g.drawLine(screenPoint3.getColumn(), screenPoint3.getRow(), screenPoint1.getColumn(), screenPoint1.getRow());
     }
-
 
     private static void drawLine(Graphics2D g, ScreenConverter sConverter, Line line) {
         ScreenPoint point1 = sConverter.real2Screen(line.getStartPoint());
@@ -244,6 +199,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
 //            currentLine.setEndPoint(screenConverter.screen2Real(new ScreenPoint(e.getX(), e.getY())));
 //            allLines.add(currentLine);
 //            currentLine = null;
+
             editingPoint = null;
         }
         repaint();

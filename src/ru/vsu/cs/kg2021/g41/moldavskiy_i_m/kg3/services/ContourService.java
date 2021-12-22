@@ -1,19 +1,42 @@
-package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3;
+package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.services;
+
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.model.SimpleTriangle;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.RealPoint;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.primitives.Line;
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.primitives.Segment;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ContourService {
 
+    public static List<RealPoint> sortContourPoints(List<RealPoint> contour) {
+        List<RealPoint> sortedList = new ArrayList<>();
+        List<RealPoint> tempSublist;
+        List<RealPoint> testedTempList = new ArrayList<>();
+        Segment testedSegment;
+        Segment tempSegment;
+        RealPoint startPoint;
+
+        for (int i = 0; i < contour.size(); i++) {
+            startPoint = contour.get(i);
+            testedSegment = new Segment(startPoint, contour.get(i + 1));
+            tempSublist = contour.subList(i + 2, contour.size() - 1);
+            for (int j = 0; j < tempSublist.size(); j++) {
+                tempSegment = new Segment(startPoint ,tempSublist.get(j));
+
+            }
+        }
+
+
+
+        return sortedList;
+    }
+
     public static List<RealPoint> getContourPoints(SimpleTriangle firstTriangle, SimpleTriangle secondTriangle) {
-        List<RealPoint> contour = new ArrayList<>();
         List<RealPoint> firstTriangleVertexes = firstTriangle.getPoints();
         List<RealPoint> secondTriangleVertexes = secondTriangle.getPoints();
-        List<RealPoint> points = new ArrayList<>();
-        List<RealPoint> borderPoints = getBorderPoints(points);
-        points.addAll(firstTriangleVertexes);
-        points.addAll(secondTriangleVertexes);
+        List<RealPoint> contour = new ArrayList<>(getIntersectionPoints(firstTriangle, secondTriangle));
         RealPoint temp1;
         RealPoint temp2;
 
@@ -31,6 +54,15 @@ public class ContourService {
     }
 
     private static List<RealPoint> getIntersectionPoints(SimpleTriangle firstTriangle, SimpleTriangle secondTriangle) {
+        /**
+         * Ax + By + C = 0
+         * A = -y2 + y1
+         * B = x2 - x1
+         * C = -y1x2 - x1y2
+         *
+         * x = - (C1 * B2 - C2 * B1)/(A1 * B2 - A2 * B1)
+         * y = - (A1 * C2 - A2 * C1)/(A1*B2 - A2 * B1)
+         */
         List<RealPoint> insertionPoints = new ArrayList<>();
         List<RealPoint> points = new ArrayList<>();
         points.addAll(firstTriangle.getPoints());
@@ -41,15 +73,17 @@ public class ContourService {
         Line tempLine2;
         RealPoint point;
 
-        for (int i = 0; i < firstTriangle.getPoints().size() - 1; i++) {
+        for (int i = 0; i < firstTriangle.getPoints().size(); i++) {
+            if(i != 2) {
             tempLine1 = new Line(firstTriangle.getPoints().get(i), firstTriangle.getPoints().get(i + 1));
-            if(i == 2) {
+            } else {
                 tempLine1 = new Line(firstTriangle.getPoints().get(2), firstTriangle.getPoints().get(0));
             }
-            for (int j = 0; j < secondTriangle.getPoints().size() - 1; j++) {
-                tempLine2 = new Line(firstTriangle.getPoints().get(j), firstTriangle.getPoints().get(j + 1));
-                if(j == 2) {
-                    tempLine1 = new Line(firstTriangle.getPoints().get(2), firstTriangle.getPoints().get(0));
+            for (int j = 0; j < secondTriangle.getPoints().size(); j++) {
+                if(j != 2) {
+                tempLine2 = new Line(secondTriangle.getPoints().get(j), secondTriangle.getPoints().get(j + 1));
+                } else {
+                    tempLine2 = new Line(secondTriangle.getPoints().get(2), secondTriangle.getPoints().get(0));
                 }
                 point = getIntersectionPoint(tempLine1, tempLine2);
                 if(checkPointIsNear(borderPoints.get(0), borderPoints.get(1), point)) {
@@ -63,10 +97,11 @@ public class ContourService {
     private static RealPoint isVertexInsideTriangle(SimpleTriangle triangle, RealPoint vertex) {
         List<RealPoint> triangleVertexes = new ArrayList<>(triangle.getPoints());
         List<Double> resultList = new ArrayList<>();
-        for (int i = 0; i < triangleVertexes.size() - 1; i++) {
-            resultList.add(multiplyVectors(new Segment(triangleVertexes.get(i + 1) ,triangleVertexes.get(i)), vertex));
-            if(i == 1) {
-               resultList.add(multiplyVectors(new Segment(triangleVertexes.get(2) ,triangleVertexes.get(0)), vertex));
+        for (int i = 0; i < triangleVertexes.size(); i++) {
+            if(i != 2) {
+            resultList.add(multiplyVectors(new Segment(triangleVertexes.get(i) ,triangleVertexes.get(i + 1)), vertex));
+            } else {
+                resultList.add(multiplyVectors(new Segment(triangleVertexes.get(2), triangleVertexes.get(0)), vertex));
             }
         }
         if(checkValueSigns(resultList)) {

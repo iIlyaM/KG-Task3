@@ -1,4 +1,6 @@
-package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3;
+package ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.model;
+
+import ru.vsu.cs.kg2021.g41.moldavskiy_i_m.kg3.point.RealPoint;
 
 import java.util.ArrayList;
 import java.util.List;
