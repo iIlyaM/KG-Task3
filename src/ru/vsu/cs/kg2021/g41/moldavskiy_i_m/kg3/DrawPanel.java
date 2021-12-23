@@ -31,7 +31,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
 //        axisX = new Line(new RealPoint(-1, 0), new RealPoint(1, 0));
 //        axisY = new Line(new RealPoint(0, -1), new RealPoint(0, 1));
         SimpleTriangle firstTriangle = new SimpleTriangle(new RealPoint(1, 6), new RealPoint(4, -7), new RealPoint(8, 4));
-        SimpleTriangle secondTriangle = new SimpleTriangle(new RealPoint(12, 5), new RealPoint(-1, 5), new RealPoint(3, 6));
+        SimpleTriangle secondTriangle = new SimpleTriangle(new RealPoint(12, 5), new RealPoint(-1, -6), new RealPoint(3, 6));
         triangles.add(firstTriangle);
         triangles.add(secondTriangle);
 
@@ -68,6 +68,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         drawTriangle(triangles.get(0), g, screenConverter);
         drawTriangle(triangles.get(1), g, screenConverter);
         List<RealPoint> test = ContourService.getContourPoints(triangles.get(0), triangles.get(1));
+        drawContour(test, g ,screenConverter);
 
         if(editingLine != null) {
             g.setColor(Color.green);
@@ -85,6 +86,22 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         g.drawLine(screenPoint1.getColumn(), screenPoint1.getRow(), screenPoint2.getColumn(), screenPoint2.getRow());
         g.drawLine(screenPoint2.getColumn(), screenPoint2.getRow(), screenPoint3.getColumn(), screenPoint3.getRow());
         g.drawLine(screenPoint3.getColumn(), screenPoint3.getRow(), screenPoint1.getColumn(), screenPoint1.getRow());
+    }
+
+    private static void drawContour(List<RealPoint> contourList, Graphics2D g, ScreenConverter sConverter) {
+        ScreenPoint startPoint;
+        ScreenPoint endPoint;
+        for (int i = 0; i < contourList.size() - 1; i++) {
+            if (i != (contourList.size() - 1)) {
+                startPoint = sConverter.real2Screen(contourList.get(i));
+                endPoint = sConverter.real2Screen(contourList.get(i + 1));
+            } else {
+                startPoint = sConverter.real2Screen(contourList.get(contourList.size() - 1));
+                endPoint = sConverter.real2Screen(contourList.get(0));
+            }
+            g.setColor(Color.red);
+            g.drawLine(startPoint.getColumn(), startPoint.getRow(), endPoint.getColumn(), endPoint.getRow());
+        }
     }
 
     private static void drawLine(Graphics2D g, ScreenConverter sConverter, Line line) {

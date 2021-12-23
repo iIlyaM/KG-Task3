@@ -12,6 +12,9 @@ public class Line {
     private List<Double> equation = new ArrayList<>();
 
     /**
+     *          * A = -y2 + y1
+     *          * B = x2 - x1
+     *          * C = -y1x2 - x1y2
      *         double A = y1 - y2;
      *         double B = x2 - x1;
      *         double C = -(y1 * x2) -(x1 * y2);

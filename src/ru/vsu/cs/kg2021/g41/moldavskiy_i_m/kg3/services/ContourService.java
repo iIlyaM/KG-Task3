@@ -11,25 +11,33 @@ import java.util.List;
 public class ContourService {
 
     public static List<RealPoint> sortContourPoints(List<RealPoint> contour) {
+        List<RealPoint> contourList = new ArrayList<>(contour);
         List<RealPoint> sortedList = new ArrayList<>();
         List<RealPoint> tempSublist;
-        List<RealPoint> testedTempList = new ArrayList<>();
+        List<Double> testedTempList = new ArrayList<>();
         Segment testedSegment;
         Segment tempSegment;
         RealPoint startPoint;
+        RealPoint testedPoint;
 
-        for (int i = 0; i < contour.size(); i++) {
-            startPoint = contour.get(i);
-            testedSegment = new Segment(startPoint, contour.get(i + 1));
-            tempSublist = contour.subList(i + 2, contour.size() - 1);
-            for (int j = 0; j < tempSublist.size(); j++) {
-                tempSegment = new Segment(startPoint ,tempSublist.get(j));
+        sortedList.add(contour.get(0));
+        //todo Доделать алгоритм
 
+        while (contourList.size() > 1) {
+            startPoint = contourList.get(0);
+            for (int i = 1; i < contour.size(); i++) {
+                testedPoint = contour.get(i);
+                for (int j = i + 1; j < contourList.size(); j++) {
+                    testedSegment = new Segment(startPoint, contourList.get(j));
+                    testedTempList.add(multiplyVectors(testedSegment, testedPoint));
+                }
+                if (checkValueSigns(testedTempList)) {
+                    sortedList.add(testedPoint);
+                    contourList.remove(0);
+                }
+                testedTempList.clear();
             }
         }
-
-
-
         return sortedList;
     }
 
@@ -53,7 +61,7 @@ public class ContourService {
         return contour;
     }
 
-    private static List<RealPoint> getIntersectionPoints(SimpleTriangle firstTriangle, SimpleTriangle secondTriangle) {
+    public static List<RealPoint> getIntersectionPoints(SimpleTriangle firstTriangle, SimpleTriangle secondTriangle) {
         /**
          * Ax + By + C = 0
          * A = -y2 + y1
@@ -113,12 +121,20 @@ public class ContourService {
     public static double multiplyVectors(Segment segment, RealPoint testedVertex) {
         RealPoint triangleVector = segment.getSegmentCoordinates();
         RealPoint testedVertexVector = new Segment(segment.getPoint1(), testedVertex).getSegmentCoordinates();
-        return (triangleVector.getX() * testedVertexVector.getY()) - (triangleVector.getY() * testedVertex.getX());
+        return (triangleVector.getX() * testedVertexVector.getY()) - (triangleVector.getY() * testedVertexVector.getX());
+    }
+
+    public static double multiplyVectors(Segment segment1, Segment segment2) {
+        RealPoint segment1Points = segment1.getSegmentCoordinates();
+        RealPoint segment2Points = segment2.getSegmentCoordinates();
+        return (segment1Points.getX() * segment2Points.getY()) - (segment1Points.getY() * segment2Points.getX());
     }
     
     private static boolean checkValueSigns(List<Double> list) {
         int positiveCounter = 0;
         int negativeCounter = 0;
+        int zeroCounter = 0;
+
         for(Double val : list) {
             if(val > 0) {
                 positiveCounter++;
@@ -126,9 +142,20 @@ public class ContourService {
             if(val < 0) {
                 negativeCounter++;
             }
+            if(val == 0) {
+                zeroCounter++;
+            }
         }
-        if(positiveCounter == 3 || negativeCounter == 3) {
-            return true;
+        if(list.size() == 3) {
+            if ((positiveCounter == 3 || negativeCounter == 3) && (zeroCounter == 0)) {
+                return true;
+            }
+        }
+        if(list.size() != 3) {
+            if(((zeroCounter == 0 && negativeCounter == 0) && positiveCounter == list.size()) ||
+                    ((zeroCounter == 0 && positiveCounter == 0) && negativeCounter == list.size())) {
+                return true;
+            }
         }
         return false;
     }
@@ -137,8 +164,6 @@ public class ContourService {
           double denominator = (firstLine.getA() * secondLine.getB()) - (secondLine.getA() - firstLine.getB());
           double numeratorX = -((firstLine.getC()) * secondLine.getB()) - (secondLine.getC() * firstLine.getB());
           double numeratorY = -((firstLine.getA()) * secondLine.getC()) - (secondLine.getA() * firstLine.getB());
-//        double newPointX = -(C1 * B2 - C2 * B1)/(A1 * B2 - A2 * B1);
-//        double newPointY = -(A1 * C2 - A2 * C1)/(A1 * B2 - A2 * B1);
 
         return new RealPoint(numeratorX / denominator, numeratorY / denominator);
     }
