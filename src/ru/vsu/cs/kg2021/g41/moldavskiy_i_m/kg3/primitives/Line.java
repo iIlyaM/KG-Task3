@@ -11,20 +11,12 @@ public class Line {
     private double A, B, C;
     private List<Double> equation = new ArrayList<>();
 
-    /**
-     *          * A = -y2 + y1
-     *          * B = x2 - x1
-     *          * C = -y1x2 - x1y2
-     *         double A = y1 - y2;
-     *         double B = x2 - x1;
-     *         double C = -(y1 * x2) -(x1 * y2);
-     */
     public Line(RealPoint startPoint, RealPoint endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        A = startPoint.getY() - endPoint.getY();
-        B = endPoint.getX() - startPoint.getX();
-        C = -(startPoint.getY() * endPoint.getX()) - (startPoint.getX() * endPoint.getY());
+        A = endPoint.getY() - startPoint.getY();
+        B = startPoint.getX() - endPoint.getX();
+        C = (startPoint.getY() * endPoint.getX()) - (startPoint.getX() * endPoint.getY());
         this.equation.add(A);
         this.equation.add(B);
         this.equation.add(C);

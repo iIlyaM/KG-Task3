@@ -32,6 +32,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
 //        axisY = new Line(new RealPoint(0, -1), new RealPoint(0, 1));
         SimpleTriangle firstTriangle = new SimpleTriangle(new RealPoint(1, 6), new RealPoint(4, -7), new RealPoint(8, 4));
         SimpleTriangle secondTriangle = new SimpleTriangle(new RealPoint(12, 5), new RealPoint(-1, -6), new RealPoint(3, 6));
+
         triangles.add(firstTriangle);
         triangles.add(secondTriangle);
 
@@ -54,8 +55,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         g.fillRect(0, 0, getWidth(), getHeight());
 
         g.setColor(Color.BLUE);
-//        drawLine(g, screenConverter, axisX);
-//        drawLine(g, screenConverter, axisY);
         g.setColor(Color.BLACK);
         for(Line l : allLines) {
             drawLine(g, screenConverter, l);
@@ -68,7 +67,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         drawTriangle(triangles.get(0), g, screenConverter);
         drawTriangle(triangles.get(1), g, screenConverter);
         List<RealPoint> test = ContourService.getContourPoints(triangles.get(0), triangles.get(1));
-        drawContour(test, g ,screenConverter);
+        drawContour(ContourService.sortContourPoints(test), g ,screenConverter);
 
         if(editingLine != null) {
             g.setColor(Color.green);
@@ -91,7 +90,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
     private static void drawContour(List<RealPoint> contourList, Graphics2D g, ScreenConverter sConverter) {
         ScreenPoint startPoint;
         ScreenPoint endPoint;
-        for (int i = 0; i < contourList.size() - 1; i++) {
+        for (int i = 0; i < contourList.size(); i++) {
             if (i != (contourList.size() - 1)) {
                 startPoint = sConverter.real2Screen(contourList.get(i));
                 endPoint = sConverter.real2Screen(contourList.get(i + 1));
@@ -142,10 +141,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
                 (distanceToLine(a, b, searchPoint ) < eps)
                         && (isPointInRect(a, b, searchPoint));
     }
-//
-//    private static double findDistance(ScreenPoint p1, ScreenPoint p2) {
-//        return Math.sqrt(Math.pow(p2.getColumn() - p1.getColumn(), 2) + Math.pow(p2.getRow() - p1.getRow(), 2));
-//    }
 
     private RealPoint getEditingPoint(ScreenPoint screenPoint) {
         for (SimpleTriangle triangle: triangles) {
@@ -213,10 +208,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
         if(SwingUtilities.isRightMouseButton(e)) {
             prevScreenPoint = null;
         } else if(SwingUtilities.isLeftMouseButton(e)) {
-//            currentLine.setEndPoint(screenConverter.screen2Real(new ScreenPoint(e.getX(), e.getY())));
-//            allLines.add(currentLine);
-//            currentLine = null;
-
             editingPoint = null;
         }
         repaint();
@@ -249,11 +240,6 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
                 editingPoint.setX(newX);
                 editingPoint.setY(newY);
             }
-//            if(currentLine != null) {
-//                currentLine.setEndPoint(screenConverter.screen2Real(new ScreenPoint(e.getX(), e.getY())));
-//            } else if(editingLine != null) {
-//
-//            }
         }
         repaint();
     }
