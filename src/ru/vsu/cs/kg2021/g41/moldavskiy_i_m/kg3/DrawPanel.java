@@ -86,18 +86,22 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
     private static void drawContour(List<RealPoint> contourList, Graphics2D g, ScreenConverter sConverter) {
-        ScreenPoint startPoint;
-        ScreenPoint endPoint;
-        for (int i = 0; i < contourList.size(); i++) {
-            if (i != (contourList.size() - 1)) {
-                startPoint = sConverter.real2Screen(contourList.get(i));
-                endPoint = sConverter.real2Screen(contourList.get(i + 1));
-            } else {
-                startPoint = sConverter.real2Screen(contourList.get(contourList.size() - 1));
-                endPoint = sConverter.real2Screen(contourList.get(0));
+        if(contourList != null) {
+            ScreenPoint startPoint;
+            ScreenPoint endPoint;
+            for (int i = 0; i < contourList.size(); i++) {
+                if (i != (contourList.size() - 1)) {
+                    startPoint = sConverter.real2Screen(contourList.get(i));
+                    endPoint = sConverter.real2Screen(contourList.get(i + 1));
+                } else {
+                    startPoint = sConverter.real2Screen(contourList.get(contourList.size() - 1));
+                    endPoint = sConverter.real2Screen(contourList.get(0));
+                }
+                g.setColor(Color.red);
+                g.drawLine(startPoint.getColumn(), startPoint.getRow(), endPoint.getColumn(), endPoint.getRow());
             }
-            g.setColor(Color.red);
-            g.drawLine(startPoint.getColumn(), startPoint.getRow(), endPoint.getColumn(), endPoint.getRow());
+        } else {
+            System.out.println("Нет точек пересечения или касания");
         }
     }
 
