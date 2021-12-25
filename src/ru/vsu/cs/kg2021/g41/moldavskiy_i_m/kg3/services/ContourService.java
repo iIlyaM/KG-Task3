@@ -53,7 +53,7 @@ public class ContourService {
         sortedList.add(minXPoint);
 
         for (int i = 1; i < contour.size(); i++) {
-            tg = Math.abs((minXPoint.getX() - contour.get(i).getX()) / (minXPoint.getY() - contour.get(i).getY()));
+            tg = ((contour.get(i).getY() - minXPoint.getY() ) /(contour.get(i).getX() - minXPoint.getX()));
             tg2Point.put(tg, contour.get(i));
         }
         SortedSet<Double> mapKeys = new TreeSet<>(tg2Point.keySet());
@@ -177,7 +177,6 @@ public class ContourService {
             if ((positiveCounter == 3 || negativeCounter == 3)) {
                 return true;
             }
-
         }
         return false;
     }
