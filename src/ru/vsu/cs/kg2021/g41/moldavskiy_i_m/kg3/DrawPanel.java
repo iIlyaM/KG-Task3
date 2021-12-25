@@ -17,7 +17,6 @@ import java.util.List;
 public class DrawPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private ScreenConverter screenConverter;
-//    private Line axisX, axisY;
     private List<SimpleTriangle> triangles = new ArrayList<>();
     private java.util.List<Line> allLines = new ArrayList<>();
     private RealPoint editingPoint;
@@ -28,8 +27,7 @@ public class DrawPanel extends JPanel implements MouseListener, MouseMotionListe
     public DrawPanel() {
         screenConverter = new ScreenConverter(-5, 10, 20, 20,
                 800, 600);
-//        axisX = new Line(new RealPoint(-1, 0), new RealPoint(1, 0));
-//        axisY = new Line(new RealPoint(0, -1), new RealPoint(0, 1));
+
         SimpleTriangle firstTriangle = new SimpleTriangle(new RealPoint(1, 6), new RealPoint(4, -7), new RealPoint(8, 4));
         SimpleTriangle secondTriangle = new SimpleTriangle(new RealPoint(12, 5), new RealPoint(-1, -6), new RealPoint(3, 6));
 

@@ -50,12 +50,14 @@ public class ContourService {
         List<RealPoint> sortedList = new ArrayList<>();
         double tg;
 
-        for (int i = 0; i < contour.size(); i++) {
+        sortedList.add(minXPoint);
+
+        for (int i = 1; i < contour.size(); i++) {
             tg = Math.abs((minXPoint.getX() - contour.get(i).getX()) / (minXPoint.getY() - contour.get(i).getY()));
             tg2Point.put(tg, contour.get(i));
         }
         SortedSet<Double> mapKeys = new TreeSet<>(tg2Point.keySet());
-        for(Double key : mapKeys) {
+        for (Double key : mapKeys) {
             sortedList.add(tg2Point.get(key));
         }
         return sortedList;
@@ -93,19 +95,20 @@ public class ContourService {
         RealPoint point;
 
         for (int i = 0; i < firstTriangle.getPoints().size(); i++) {
-            if(i != 2) {
-            tempLine1 = new Line(firstTriangle.getPoints().get(i), firstTriangle.getPoints().get(i + 1));
+            if (i != 2) {
+                tempLine1 = new Line(firstTriangle.getPoints().get(i), firstTriangle.getPoints().get(i + 1));
             } else {
                 tempLine1 = new Line(firstTriangle.getPoints().get(2), firstTriangle.getPoints().get(0));
             }
             for (int j = 0; j < secondTriangle.getPoints().size(); j++) {
-                if(j != 2) {
-                tempLine2 = new Line(secondTriangle.getPoints().get(j), secondTriangle.getPoints().get(j + 1));
+                if (j != 2) {
+                    tempLine2 = new Line(secondTriangle.getPoints().get(j), secondTriangle.getPoints().get(j + 1));
                 } else {
                     tempLine2 = new Line(secondTriangle.getPoints().get(2), secondTriangle.getPoints().get(0));
                 }
                 point = getIntersectionPoint(tempLine1, tempLine2);
-                if(checkPointIsNear(borderPoints.get(0), borderPoints.get(1), point)) {
+
+                if (isPointOnSide(tempLine1, point) && isPointOnSide(tempLine2, point)) {
                     insertionPoints.add(point);
                 }
             }
@@ -129,6 +132,25 @@ public class ContourService {
         return null;
     }
 
+    private static boolean isPointOnSide(Line line, RealPoint point) {
+        //(x-x1)/(x2-x1)=(y-y1)/(y2-y1)
+
+//        return ((point.getX() - line.getStartPoint().getX()) / (line.getEndPoint().getX()) - line.getStartPoint().getX())
+//                ==
+//                ((point.getY() - line.getStartPoint().getY())/(line.getEndPoint().getY() - line.getStartPoint().getY()));
+        double x1 = line.getStartPoint().getX();
+        double x2 = line.getEndPoint().getX();
+        double y1 = line.getStartPoint().getY();
+        double y2 = line.getEndPoint().getY();
+        if ((Math.min(x1, x2) < point.getX() && point.getX() < Math.max(x1, x2))) {
+            return true;
+        }
+        if ((Math.min(y1, y2) < point.getY() && point.getY() < Math.max(y1, y2))) {
+            return true;
+        }
+        return false;
+    }
+
     public static double multiplyVectors(Segment segment, RealPoint testedVertex) {
         RealPoint triangleVector = segment.getSegmentCoordinates();
         RealPoint testedVertexVector = new Segment(segment.getPoint1(), testedVertex).getSegmentCoordinates();
@@ -147,21 +169,15 @@ public class ContourService {
             if(val < 0) {
                 negativeCounter++;
             }
-            if(val == 0) {
-                zeroCounter++;
-            }
+//            if(val == 0) {
+//                zeroCounter++;
+//            }
         }
         if(list.size() == 3) {
-            if ((positiveCounter == 3 || negativeCounter == 3) && (zeroCounter == 0)) {
+            if ((positiveCounter == 3 || negativeCounter == 3)) {
                 return true;
             }
-        }
-        if(list.size() != 3) {
-            if(((zeroCounter == 0 && negativeCounter == 0) && positiveCounter == list.size()) ||
-                    ((zeroCounter == 0 && positiveCounter == 0) && negativeCounter == list.size()) /* ||
-                    ((negativeCounter == 0 && positiveCounter == 0))*/) {
-                return true;
-            }
+
         }
         return false;
     }
@@ -175,8 +191,6 @@ public class ContourService {
     }
 
     private static List<RealPoint> getBorderPoints(List<RealPoint> points) {
-//        int min = list.get(0);
-//        int max = list.get(0);
         List<RealPoint> borderPoints = new ArrayList<>();
         double maxX = points.get(0).getX();
         double maxY = points.get(0).getY();
